@@ -1,19 +1,29 @@
 # Assignment 1, Exploratory Data Analysis
 # Uses electric power consumption data for period of 4 years
 
+# Set working directory to location of power consumption data file
 setwd ("D:/Training/Exploratory Data Analysis")
+
+# Read full table as characters or numerics, not factors
 power_data <- read.table ("household_power_consumption.txt", 
                           header = TRUE, sep = ";", na.strings = c("?"),
-                          colClasses = c ("character", "character", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"))
+                          colClasses = c ("character", "character", "numeric", "numeric", "numeric",
+                                          "numeric", "numeric", "numeric", "numeric"))
 
+# Convert date field from character to date format since we will need for date comparisons
 power_data$Date <- as.Date (power_data$Date, "%d/%m/%Y")
 
-power_data <- power_data [power_data$Date >= as.Date ("2007-02-01") & power_data$Date < as.Date ("2007-02-03"),]
+# Eliminate the data we don't need, only keep the date range we want
+power_data <- power_data [power_data$Date >= as.Date ("2007-02-01") 
+                          & power_data$Date < as.Date ("2007-02-03"),]
 
+# Create a column with a consolidated date-time field which we will need for graphing
 power_data$dt <- as.POSIXlt (paste (as.character (power_data$Date), power_data$Time))
 
+# Plot the graph to the designated png file; default size is 480 x 480 pixels anyway
 png ("plot4.png")
 
+# 2 x 2 layout of graphs
 par (mfcol = c (2,2))
 
 with (power_data, {
@@ -21,7 +31,8 @@ with (power_data, {
   plot (dt, Sub_metering_1, "l", xlab = "", ylab = "Energy sub metering")
   lines (dt, Sub_metering_2, col = "red")
   lines (dt, Sub_metering_3, col = "blue")
-  legend ("topright", lwd = 1, col = c ("black", "red", "blue"), bty = "n", legend = c ("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"))
+  legend ("topright", lwd = 1, col = c ("black", "red", "blue"), bty = "n", 
+          legend = c ("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"))
   
   plot (dt, Voltage, "l", xlab = "datetime", ylab = "Voltage")
   plot (dt, Global_reactive_power, "l", xlab = "datetime")
